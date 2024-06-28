@@ -3,22 +3,16 @@ import Typography from "@/components/typography/Typography";
 import Container from "@/components/container/Container";
 import React, { useState } from "react";
 import Pagination from "@components/pagination/Pagination";
-import DisplayGrid from "@components/display/displayGrid/DisplayGrid";
-import DisplayList from "@components/display/displayList/DisplayList";
 import DisplayBar from "@components/display/displayBar/DisplayBar";
-import AddProjectModal from "@components/projects/addProjectModal/AddProjectModal";
+import AddMemberModal from "@components/members/addProjectModal/AddMemberModal";
 import Spinner from "@components/spinner/Spinner";
-import ProjectCard from "@components/projects/project/card/ProjectCard";
-import ProjectRow from "@components/projects/project/row/ProjectRow";
+import MemberRow from "@components/members/member/row/MemberRow";
 import NoProjects from "@components/projects/noProjects/NoProjects";
-import { useProjects } from "@hooks/projects/useProjects";
+import { useMembers} from "@hooks/members/useMembers";
 import { PROJECTS_PAGE_SIZE } from "@common/consts";
 import NoSearchResults from "@components/projects/noSearchResults/NoSearchResults";
-import Button from "@components/button/Button";
-import Plus from "@/assets/plus.svg?react";
 
 const ProjectsOverview: React.FC = React.memo(() => {
-  const [isDisplayGrid, setDisplayGrid] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
   const {
@@ -27,15 +21,14 @@ const ProjectsOverview: React.FC = React.memo(() => {
     totalCount,
     currentAmount,
     isPlaceholderData,
-    projects,
+    members,
     isSuccess,
     isLoading,
     setSearch,
-    search,
-  } = useProjects();
+    search, 
+  } = useMembers();
 
-  const ProjectDisplay = isDisplayGrid ? DisplayGrid : DisplayList;
-  const ProjectComponent = isDisplayGrid ? ProjectCard : ProjectRow;
+
 
   const hasProjects = isSuccess && currentAmount > 0;
   const noSearchResultsFound = !hasProjects && search !== "";
@@ -44,32 +37,41 @@ const ProjectsOverview: React.FC = React.memo(() => {
     <Container>
       <div className="mt-10 text-mono/basic-1 mx-10 w-full flex flex-col">
         <div className="max-h-1/4">
-          <Typography variant="headline-xl">Projects Overview</Typography>
+        <Typography variant="headline-xs">Test</Typography>
+          <Typography variant="headline-xl">Members</Typography>
           <DisplayBar
             success={isSuccess}
-            isDisplayGrid={isDisplayGrid}
-            setDisplayGrid={setDisplayGrid}
-            setSearch={setSearch}
+            isDisplayGrid={false}
             setShowModal={setShowModal}
-            displayOptions
-            searchPlaceholder="Search by project name"
-            button="Add new project"
+            setSearch={setSearch}
+            button="Add new member"
+            searchPlaceholder="Search by username"
           />
         </div>
         {isLoading ? (
           <Spinner />
         ) : hasProjects ? (
           <>
-            <div className="flex justify-center custom-scroll overflow-y-scroll grow-0 max-h-[65%] h-[65%] min-h-[65%]">
-              <ProjectDisplay>
-                {projects.map((project, i) => (
-                  <ProjectComponent
-                    key={i}
-                    name={project.name}
-                    hierarchy={project.hierarchy}
-                  />
-                ))}
-              </ProjectDisplay>
+            <div className="flex custom-scroll overflow-y-scroll grow-0 max-h-[65%] h-[65%] min-h-[65%]">
+             <table className="w-full h-fit	text-left	">
+                <thead>
+                  <tr>
+                    <th className="w-full ">Name</th>
+                    <th className="w-6">Last active</th>
+                    <th  className="w-6">Role</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {members.map((member) => (
+                    <MemberRow
+                      username={member.username}
+                      lastActive={member.lastActive}
+                      role={member.role}
+                    />
+                  ))}
+                </tbody>
+             </table>
             </div>
             <div className="flex items-center justify-between h-[10%]">
               <Typography variant="body-sm" className="text-mono/basic-4">
@@ -96,7 +98,7 @@ const ProjectsOverview: React.FC = React.memo(() => {
           />
         )}
       </div>
-      {showModal && <AddProjectModal setShowModal={setShowModal} />}
+      {showModal && <AddMemberModal setShowModal={setShowModal} />}
     </Container>
   );
 });

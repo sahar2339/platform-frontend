@@ -1,5 +1,6 @@
 import { http, HttpHandler, HttpResponse } from "msw";
 import { projectsHandlers } from "./handlers/projects";
+import { membersHandlers } from "./handlers/members"; 
 import { API_URL } from "@common/consts";
 import { hierarchiesHandlers } from "./handlers/hierarchies";
 import { applicationHandlers } from "./handlers/applications";
@@ -39,6 +40,7 @@ const namespacesHandlers: HttpHandler[] = [
     });
   }),
 ];
+
 
 const secretsHandlers: HttpHandler[] = [
   http.post(`${API_URL}/:namespace/secrets`, ({ request, params }) => {
@@ -110,6 +112,7 @@ export const handlers: HttpHandler[] = [
   ...containersHandlers,
   ...secretsHandlers,
   ...authHandlers,
+  ...membersHandlers,
   ...namespacesHandlers,
   ...projectsHandlers,
   ...hierarchiesHandlers,

@@ -10,19 +10,24 @@ import { useSearchProjects } from "@hooks/search/useSearch";
 
 type DisplayBarProps = {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
-  setDisplayGrid: React.Dispatch<React.SetStateAction<boolean>>;
+  setDisplayGrid?: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   isDisplayGrid: boolean;
   success: boolean;
-  button: ReactNode;
+  button: string;
+  searchPlaceholder?: string;
+  displayOptions?: boolean;
 };
 
 const DisplayBar = React.memo(
   ({
-    setDisplayGrid,
+    setDisplayGrid = () => {},
     isDisplayGrid,
     success,
     setSearch,
     button,
+    searchPlaceholder = "Search",
+    displayOptions = false,
   }: DisplayBarProps) => {
     const onSearch: SubmitHandler<FieldValues> = async ({ search }) =>
       setSearch(search);
@@ -36,11 +41,12 @@ const DisplayBar = React.memo(
             disabled={!success}
             {...register("search")}
             autoComplete="search"
-            placeholder="Search repositories and applications..."
+            placeholder={searchPlaceholder}
           />
         </form>
         <div className=" flex items-center">
-          <Typography className="px-3">
+          {displayOptions ? <>
+            <Typography className="px-3">
             <Rectangle />
           </Typography>
           <div onClick={() => setDisplayGrid(true)}>
@@ -57,7 +63,8 @@ const DisplayBar = React.memo(
               <Union />
             </Typography>
           </div>
-          <Typography className="px-3">
+      </> : null}
+      <Typography className="px-3">
             <Rectangle />
           </Typography>
           {button}
